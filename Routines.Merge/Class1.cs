@@ -1,90 +1,49 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection.PortableExecutable;
 
 namespace Routines.Merge;
 
 public class Sort
 {
+
     public static int[] CombineSortedArrays(int[] a, int[] b)
     {
-        var result = new List<int>();
-        var _a = a.ToList();
-        var _b = b.ToList();
-//determines When Process is over
-        while (_a.Count > 0 && _b.Count > 0)
+        int[] combined = new int[a.Length + b.Length];
+        int i = 0;
+        int j = 0;
+        int c = 0;
+        while (c < combined.Length)
         {
-
-                
-            if (_a.Min() <= _b.Min())
+            if (j == b.Length || i != a.Length && a[i] < b[j])
             {
-                int low = _a.Min();
-                result.Add(low);
-                _a.Remove(low);
+                combined[c] = (a[i]);
+                i++;
+            }
 
-                //Checks to see if a list is empty and deals with any remaining Values in the list.
-                if (_a.Count() == 0 || _b.Count() == 0) 
-                {
-                    if (_a.Count == 0)
-                    {
-                        while (_b.Count() > 0)
-                        {
-                            low = _b.Min();
-                            result.Add(low);
-                            _b.Remove(low);
-                        }
-                    }
-                    if (_b.Count == 0)
-                    {
-                        while (_a.Count() > 0)
-                        {
-                            low = _a.Min();
-                            result.Add(low);
-                            _a.Remove(low);
-                        }
-                    }
-                    return result.ToArray();
-                }
-            }
-            
-            if (_a.Min() >= _b.Min())
+            else
             {
-                int low = _b.Min();
-                result.Add(low);
-                _b.Remove(low);
-                if (_a.Count() == 0 || _b.Count() == 0)
-                {
-                    if (_a.Count == 0)
-                    {
-                        while (_b.Count() > 0)
-                        {
-                            low = _b.Min();
-                            result.Add(low);
-                            _b.Remove(low);
-                        }
-                    }
-                    if (_b.Count == 0)
-                    {
-                        while (_a.Count() > 0)
-                        {
-                            low = _a.Min();
-                            result.Add(low);
-                            _a.Remove(low);
-                        }
-                    }
-                    return result.ToArray();
-                }
+                combined[c] = b[j];
+                j++;
             }
+            c++;
         }
-        return result.ToArray();
-
+        return combined;
     }
+
 
     public static int[] SortViaMergesort(int[] values)
     {
-        int middle = values.Length / 2;
-        int[] firstHalf = values[0..middle];
-        int[] secondHalf = values[middle..values.Length];
+        if (values.Length < 2)
+        {
+            return values;
+        }
 
-        return CombineSortedArrays(firstHalf, secondHalf);
+        else
+        {
+            int middle = values.Length / 2;
+            int[] firstHalf = values[0..middle];
+            int[] secondHalf = values[middle..values.Length];
+            return CombineSortedArrays(SortViaMergesort(firstHalf), SortViaMergesort(secondHalf));
+        }
     }
-
 }
